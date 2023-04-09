@@ -84,16 +84,15 @@ end
 
 function ProjectBot:OnKeystoneUpdate(unitName, keystoneInfo, allKeystoneInfo)
 
-	-- This is ripped straight from Details!
-	local keystoneData = openRaidLib.GetAllKeystonesInfo()
-
 	local guildUsers = {}
-
 	local realmName = GetRealmName()
 	--create a string to use into the gsub call when removing the realm name from the player name, by default all player names returned from GetGuildRosterInfo() has PlayerName-RealmName format
 	local realmNameGsub = "%-.*"
 
 	if (guildName) then
+			-- This is ripped straight from Details!
+		local keystoneData = openRaidLib.GetAllKeystonesInfo()
+		
 		PROJECTDB[guildName] = PROJECTDB[guildName] or {}
 
 		local totalMembers, onlineMembers, onlineAndMobileMembers = GetNumGuildMembers()
@@ -109,15 +108,12 @@ function ProjectBot:OnKeystoneUpdate(unitName, keystoneInfo, allKeystoneInfo)
 				break
 			end
 		end
+		
 		if (keystoneData) then
 			local unitsAdded = {}
 			local isOnline = true
 			PROJECTDB[guildName]['keystones'] = PROJECTDB[guildName]['keystones'] or {}
 			for unitName, keystoneInfo in pairs(keystoneData) do
-				--local classId = keystoneInfo.classID
-				--local classIcon = [[Interface\GLUES\CHARACTERCREATE\UI-CharacterCreate-Classes]]
-				--local coords = CLASS_ICON_TCOORDS
-				--local _, class = GetClassInfo(classId)
 
 				local mapName = C_ChallengeMode.GetMapUIInfo(keystoneInfo.mythicPlusMapID) or ""
 
@@ -130,12 +126,8 @@ function ProjectBot:OnKeystoneUpdate(unitName, keystoneInfo, allKeystoneInfo)
 					keystoneTable.rating = 	keystoneInfo.rating
 					keystoneTable.level =	keystoneInfo.level
 					keystoneTable.mapName = mapName
-					--keystoneTable.isOnline = isOnline
-					--keystoneTable.isGuildMember = isGuildMember
-					--keystoneTable.guild_name = guildName
 					keystoneTable.date = time()
 
-					--print("[" .. keystoneInfo.rating .. "]  " .. unitName .. " has a +" .. keystoneInfo.level .. " ".. mapName .. ".")
 					PROJECTDB[guildName]['keystones'][unitName] = keystoneTable
 				end
 			end
