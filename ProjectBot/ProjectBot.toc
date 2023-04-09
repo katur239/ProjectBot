@@ -1,0 +1,8 @@
+## Interface: 100007
+## Title: Project Bot
+## Author: Katur239
+## Version: 1.0
+## SavedVariables: PROJECTDB, PROJECTENCODED
+
+libs.xml
+Core.lua

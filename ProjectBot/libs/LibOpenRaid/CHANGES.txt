@@ -1,0 +1,10 @@
+tag d836fe2ba48e174c5883a559af2f628184c31d52 v10.0.5.96
+Author:	Tercio Jose <terciob19@hotmail.com>
+Date:	Wed Feb 8 13:13:21 2023 -0300
+
+commit a7d0e5c9e0e857f3df1281eeccc1e286a35ef7c6
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed Feb 8 12:44:04 2023 -0300
+
+    Get lowest item durability
+
