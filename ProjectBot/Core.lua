@@ -5,17 +5,18 @@ local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 
 local ProjectBot = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceConsole-3.0", "AceHook-3.0")
-local guildName = GetGuildInfo("player")
+
+guildName, realmName = nil
 
 StaticPopupDialogs["PROJECTBOT_EXPORT"] = {
-    text = "String to import in to Discord Bot.",
+    text = "String to import in to the Discord Bot.",
     button1 = ACCEPT,
     OnAccept = function(self, configID)
     end,
     timeout = 0,
     OnShow = function (self, data)
 		self:SetWidth(650)
-		self.editBox:SetWidth(500)
+		self.editBox:SetWidth(525)
 		self.editBox:SetText(PROJECTENCODED)
 		self.editBox:SetAutoFocus(true)
 		self.editBox:SetCursorPosition(0)
@@ -34,9 +35,15 @@ end
 SLASH_KEYSCODE1 = "/keyscode"
 SLASH_KEYSCODE2 = "/keycode"
 SlashCmdList["KEYSCODE"] = function(msg)
-	requestUpdate()
+	--requestUpdate()
 	--C_Timer.After(2.5, function() PROJECTENCODED = ProjectBot:Encode(PROJECTDB[guildName]['keystones']) end)
+
+	if not guildName then
+		ProjectBot:PLAYER_ENTERING_WORLD()
+	end
+
 	PROJECTENCODED = ProjectBot:Encode(PROJECTDB[guildName]['keystones'])
+
 	local dialog = StaticPopup_Show("PROJECTBOT_EXPORT")
 end 
 
@@ -45,8 +52,11 @@ SlashCmdList["KEYUPDATE"] = function(msg)
 	local requestSent = requestUpdate()
 end 
 
-function ProjectBot:OnInitialize()		
+function ProjectBot:OnInitialize()
+	print("ProjectBot Loaded")
+
 	PROJECTDB = PROJECTDB or {}
+	PROJECTENCODED = PROJECTENCODED or ""
 
 	if (openRaidLib) then
 		openRaidLib.RegisterCallback(ProjectBot, "KeystoneUpdate", "OnKeystoneUpdate")
@@ -68,7 +78,11 @@ function ProjectBot:Encode(data)
 end
 
 function ProjectBot:OnEnable()
-    --initialize Saved Variables and other start up tasks
+end
+
+function ProjectBot:PLAYER_ENTERING_WORLD()
+	guildName = GetGuildInfo("player")	
+	realmName = GetRealmName()
 end
 
 function ProjectBot:OnAddonLoaded(event, addonName)
@@ -85,10 +99,11 @@ end
 function ProjectBot:OnKeystoneUpdate(unitName, keystoneInfo, allKeystoneInfo)
 
 	local guildUsers = {}
-	local realmName = GetRealmName()
+	if not guildName then
+		ProjectBot:PLAYER_ENTERING_WORLD()
+	end
 	--create a string to use into the gsub call when removing the realm name from the player name, by default all player names returned from GetGuildRosterInfo() has PlayerName-RealmName format
 	local realmNameGsub = "%-.*"
-
 	if (guildName) then
 			-- This is ripped straight from Details!
 		local keystoneData = openRaidLib.GetAllKeystonesInfo()
@@ -151,7 +166,10 @@ function ProjectBot:OnKeystoneUpdate(unitName, keystoneInfo, allKeystoneInfo)
 		end
 
 		for _, key in ipairs(keysToDelete) do
-			table.remove(db, key)
+			db[key] = nil
 		end
 	end
+
+	PROJECTENCODED = ProjectBot:Encode(PROJECTDB[guildName]['keystones'])
+	
 end
