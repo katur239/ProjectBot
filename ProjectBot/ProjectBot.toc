@@ -1,7 +1,7 @@
 ## Interface: 100007
 ## Title: Project Bot
 ## Author: Katur239
-## Version: 1.0
+## Version: 1.0.1
 ## SavedVariables: PROJECTDB, PROJECTENCODED
 
 libs.xml
